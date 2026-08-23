@@ -1,0 +1,46 @@
+# ==============================
+# Dependencies
+# ==============================
+node_modules/
+
+# ==============================
+# Environment / secrets
+# ==============================
+.env
+.env.*
+!.env.example
+
+# ==============================
+# Playwright
+# ==============================
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+playwright/.auth/
+
+# ==============================
+# Facebook browser sessions
+# ==============================
+fbpost/.browser-profile/
+fbpost/.browser-profile-*/
+fbpost/.browser-profile-personal/
+fbpost/.browser-profile-old/
+
+# ==============================
+# Logs
+# ==============================
+logs/
+fbpost/logs/
+
+# ==============================
+# Local posting state
+# ==============================
+fbpost/data/posting-state.json
+fbpost/data/page-posting-state.json
+fbpost/data/personal-posting-state.json
+
+# ==============================
+# Local/generated batch data
+# ==============================
+fbpost/data/daily-batch.json
