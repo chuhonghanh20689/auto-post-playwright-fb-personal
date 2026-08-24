@@ -280,7 +280,7 @@ async function main(): Promise<void> {
     "\n=========================================="
   );
   console.log(
-    "    PREPARE DAILY PERSONAL FB BATCH"
+    "      PREPARE DAILY FACEBOOK BATCH"
   );
   console.log(
     "==========================================\n"
@@ -451,7 +451,7 @@ async function main(): Promise<void> {
       )
     );
 
-  const eligibleGroups =
+  let eligibleGroups =
     groups
       .map((group, index) => ({
         group,
@@ -466,20 +466,59 @@ async function main(): Promise<void> {
           )
       );
 
+  /*
+   * Nếu đã chạy hết phần còn lại của groups.json:
+   * - Bắt đầu một vòng mới từ group đầu tiên.
+   * - Vẫn giữ blocked-groups.json làm danh sách loại trừ.
+   * - Không reset totalPosted.
+   */
   if (eligibleGroups.length === 0) {
     console.log(
-      "\n🎉 Không còn group hợp lệ nào từ vị trí hiện tại."
+      "\n🔄 Đã chạy hết vòng hiện tại."
     );
 
     console.log(
-      `📌 nextGroupIndex: ${state.nextGroupIndex}`
+      `📌 nextGroupIndex hiện tại: ${state.nextGroupIndex}`
     );
 
     console.log(
-      `🚫 Group bị block: ${blockedGroups.length}`
+      "🔁 Reset về group đầu tiên để bắt đầu vòng mới."
     );
 
-    return;
+    state.nextGroupIndex = 0;
+
+    writeJson(
+      STATE_FILE,
+      state
+    );
+
+    eligibleGroups =
+      groups
+        .map((group, index) => ({
+          group,
+          originalIndex: index
+        }))
+        .filter(
+          (item) =>
+            !blockedUrls.has(
+              item.group.url
+            )
+        );
+
+    /*
+     * Trường hợp tất cả group đều bị block.
+     */
+    if (eligibleGroups.length === 0) {
+      console.log(
+        "\n🚫 Không còn group hợp lệ nào."
+      );
+
+      console.log(
+        `🚫 Group bị block: ${blockedGroups.length}`
+      );
+
+      return;
+    }
   }
 
   const selectedEntries =
@@ -516,6 +555,10 @@ async function main(): Promise<void> {
 
   console.log(
     `📦 Chọn ${selectedGroups.length} group hợp lệ cho batch hôm nay.`
+  );
+
+  console.log(
+    `📍 Batch bắt đầu từ group ${startGroupIndex + 1}.`
   );
 
   if (
@@ -682,7 +725,7 @@ async function main(): Promise<void> {
   );
 
   console.log(
-    "👉 Chưa đăng Facebook cá nhân."
+    "👉 Chưa đăng Facebook."
   );
 
   console.log(
