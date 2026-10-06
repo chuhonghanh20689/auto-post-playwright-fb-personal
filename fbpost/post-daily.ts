@@ -70,7 +70,6 @@ const STATE_FILE = path.join(
   "posting-state.json"
 );
 
-// Facebook cá nhân: dùng profile riêng, không switch sang Page/profile khác.
 const PROFILE_DIR = path.join(
   ROOT,
   ".browser-profile"
@@ -202,7 +201,7 @@ function sleep(ms: number): Promise<void> {
 }
 
 /* ============================================================
-   FACEBOOK HELPERS — PERSONAL ACCOUNT
+   FACEBOOK PAGE HELPERS
 ============================================================ */
 
 async function waitForFacebook(
@@ -242,7 +241,7 @@ async function findVisibleText(
 
 /*
  * Chỉ coi là BLOCK nếu Facebook hiển thị dấu hiệu rõ ràng
- * rằng tài khoản cá nhân không được phép tạo bài.
+ * rằng tài khoản/Page không được phép tạo bài.
  *
  * Timeout / network / load lỗi không tự block group.
  */
@@ -268,7 +267,7 @@ async function detectPermanentPostingBlock(
       pattern:
         /you can'?t post in this group/,
       reason:
-        "Facebook báo tài khoản cá nhân không thể đăng bài trong group."
+        "Facebook báo tài khoản/Page không thể đăng bài trong group."
     },
     {
       pattern:
@@ -298,14 +297,44 @@ async function detectPermanentPostingBlock(
       pattern:
         /you don't have permission to post/,
       reason:
-        "Tài khoản cá nhân không có quyền đăng bài."
+        "Tài khoản/Page không có quyền đăng bài."
     },
     {
       pattern:
         /you do not have permission to post/,
       reason:
-        "Tài khoản cá nhân không có quyền đăng bài."
+        "Tài khoản/Page không có quyền đăng bài."
     },
+    {
+      pattern:
+        /this group does not allow pages to post/,
+      reason:
+        "Group không cho Page đăng bài."
+    },
+    {
+      pattern:
+        /pages can't post/,
+      reason:
+        "Facebook báo Page không thể đăng bài trong group."
+    },
+    {
+      pattern:
+        /pages cannot post/,
+      reason:
+        "Facebook báo Page không thể đăng bài trong group."
+    },
+    {
+      pattern:
+        /page.*can't post/,
+      reason:
+        "Facebook báo Page không thể đăng bài trong group."
+    },
+    {
+      pattern:
+        /page.*cannot post/,
+      reason:
+        "Facebook báo Page không thể đăng bài trong group."
+    }
   ];
 
   for (
@@ -354,10 +383,13 @@ async function checkGroupPostAccess(
   }
 
   /*
-   * Personal-account project:
+   * Page project:
    * Nếu Facebook không hiện composer, thử lại vài lần.
-   * Nếu vẫn không có composer thì coi là group không cho
-   * tài khoản cá nhân đăng bài, ghi block và đi tiếp group sau.
+   * Nếu vẫn không có composer thì coi là group Page không
+   * được phép đăng, ghi block và đi tiếp group sau.
+   *
+   * Điều này phù hợp với project này vì đây là workflow
+   * dành riêng cho Page Đảo Bánh Quy.
    */
   for (let attempt = 1; attempt <= 3; attempt++) {
     const composer =
@@ -383,13 +415,13 @@ async function checkGroupPostAccess(
   return {
     status: "blocked",
     reason:
-      "Không tìm thấy Create post/composer sau nhiều lần kiểm tra."
+      "Không tìm thấy Create post/composer sau nhiều lần kiểm tra; coi là Page không có quyền đăng trong group."
   };
 }
 
 /*
- * Một số lỗi xảy ra khi mở composer cũng là dấu hiệu tài khoản
- * cá nhân không được phép đăng. Không để chúng rơi vào catch chung
+ * Một số lỗi xảy ra khi mở composer cũng là dấu hiệu Page
+ * không được phép đăng. Không để chúng rơi vào catch chung
  * rồi dừng toàn chương trình.
  */
 function isBlockedLikeError(
@@ -408,71 +440,11 @@ function isBlockedLikeError(
       "không tìm thấy ô tạo bài viết"
     ) ||
     normalized.includes(
+      "page không được phép đăng"
+    ) ||
+    normalized.includes(
       "không tìm thấy create post"
     )
-  );
-}
-
-
-/*
- * Các lỗi thao tác/UI chỉ ảnh hưởng tới group hiện tại.
- *
- * Nếu gặp những lỗi này:
- * - không pause cả chương trình;
- * - không dừng batch;
- * - bỏ qua group hiện tại;
- * - chuyển sang group tiếp theo.
- *
- * Lưu ý: lỗi sau khi click Post nhưng chưa xác nhận kết quả
- * không được coi là lỗi an toàn để retry/đăng lại.
- */
-function isGroupLocalError(
-  error: unknown
-): boolean {
-  const message =
-    error instanceof Error
-      ? error.message
-      : String(error);
-
-  const normalized =
-    message.toLowerCase();
-
-  const groupLocalPatterns = [
-    // Composer / caption
-    "không tìm thấy ô tạo bài viết",
-    "không tìm thấy create post",
-    "không tìm thấy ô nhập caption",
-
-    // Photo / upload
-    "không tìm thấy nút photo/video",
-    "không tìm thấy nút photo",
-    "photo/video",
-    "file picker",
-    "filechooser",
-    "file input",
-    "setinputfiles",
-    "upload",
-
-    // Post button / UI
-    "không tìm thấy nút post",
-    "không tìm thấy nút đăng",
-    "post/đăng",
-
-    // Playwright UI errors
-    "element is not attached",
-    "element is not visible",
-    "intercepts pointer events",
-    "waiting for",
-    "timeout",
-
-    // Facebook page changing / loading
-    "execution context was destroyed",
-    "navigation",
-  ];
-
-  return groupLocalPatterns.some(
-    (pattern) =>
-      normalized.includes(pattern)
   );
 }
 
@@ -602,7 +574,7 @@ async function fillCaption(
 }
 
 /*
- * Facebook có thể mở dropdown đề xuất khi gõ.
+ * Facebook có thể mở dropdown đề xuất Page khi gõ.
  * Ưu tiên click tiêu đề "Create post" / "Tạo bài viết"
  * để đóng dropdown; Escape là fallback.
  */
@@ -1002,7 +974,7 @@ async function main(): Promise<void> {
     "\n=========================================="
   );
   console.log(
-    "       FACEBOOK PERSONAL POSTER"
+    "          FACEBOOK DAILY POSTER"
   );
   console.log(
     "==========================================\n"
@@ -1100,15 +1072,13 @@ async function main(): Promise<void> {
     );
   }
 
-  if (
-    state.nextGroupIndex !==
-    batch.startGroupIndex
-  ) {
-    throw new Error(
-      "Batch không khớp posting-state. " +
-      "Dừng để tránh đăng nhầm group."
-    );
-  }
+  /*
+   * posting-state có thể đang nằm giữa batch nếu chương trình
+   * được chạy tiếp sau khi đã đăng một phần batch.
+   *
+   * Không bắt buộc nextGroupIndex phải bằng startGroupIndex.
+   * Thay vào đó, tìm đúng post theo groupIndex thực tế để resume.
+   */
 
   /*
    * 4. Browser
@@ -1185,22 +1155,59 @@ async function main(): Promise<void> {
   /*
    * 6. Xác định bài cần chạy
    */
+  /*
+   * 6. Xác định bài cần chạy
+   *
+   * Resume theo groupIndex thực tế.
+   * Không dùng phép trừ:
+   *   nextGroupIndex - startGroupIndex
+   * vì batch.posts có thể không liên tục.
+   */
   const currentIndex =
-    state.nextGroupIndex -
-    batch.startGroupIndex;
+    batch.posts.findIndex(
+      (post) =>
+        post.groupIndex ===
+        state.nextGroupIndex
+    );
 
-  if (
-    currentIndex < 0 ||
-    currentIndex >=
-      batch.posts.length
-  ) {
+  if (currentIndex < 0) {
+    /*
+     * Nếu state đã vượt quá toàn bộ batch
+     * thì batch này đã xử lý xong.
+     */
+    const remainingPosts =
+      batch.posts.filter(
+        (post) =>
+          post.groupIndex >=
+          state.nextGroupIndex
+      );
+
+    if (remainingPosts.length === 0) {
+      console.log(
+        "\nℹ️ Batch này đã được xử lý hết."
+      );
+
+      console.log(
+        `📌 nextGroupIndex = ${state.nextGroupIndex}`
+      );
+
+      console.log(
+        `📈 Tổng bài đã đăng: ${state.totalPosted}`
+      );
+
+      await context.close();
+      return;
+    }
+
     throw new Error(
-      "Không xác định được bài cần đăng."
+      `Không tìm thấy group ${state.nextGroupIndex} trong daily-batch.json. ` +
+      `Kiểm tra lại batch/state trước khi chạy để tránh đăng nhầm group.`
     );
   }
 
   console.log(
-    `▶️ Bắt đầu từ bài ${currentIndex + 1}`
+    `▶️ Bắt đầu từ group ${state.nextGroupIndex + 1} ` +
+    `(bài ${currentIndex + 1}/${batch.posts.length})`
   );
 
 
@@ -1310,28 +1317,20 @@ async function main(): Promise<void> {
         );
       }
     } catch (error) {
-      const reason =
-        error instanceof Error
-          ? error.message
-          : String(error);
-
-      console.error(
-        `\n❌ Lỗi tại bài ${item.index}`
-      );
-
-      console.error(error);
-
       /*
-       * 1. Lỗi rõ ràng cho thấy group bị block/quyền đăng bị hạn chế.
-       *    -> ghi vào blocked-groups.json
-       *    -> cập nhật state
-       *    -> chuyển group kế tiếp ngay.
+       * Nếu lỗi thực chất là Page không có composer/quyền đăng:
+       * ghi block + tăng state + tiếp tục group kế tiếp.
        */
       if (
         isBlockedLikeError(error)
       ) {
+        const reason =
+          error instanceof Error
+            ? error.message
+            : String(error);
+
         console.log(
-          `🚫 Group bị block: ${reason}`
+          `🚫 Xác định group bị block: ${reason}`
         );
 
         addBlockedGroup(
@@ -1355,53 +1354,40 @@ async function main(): Promise<void> {
       }
 
       /*
-       * 2. Lỗi UI / composer / upload chỉ ảnh hưởng tới group hiện tại.
-       *    -> không pause cả batch
-       *    -> không đánh dấu là blocked
-       *    -> bỏ qua group hiện tại
-       *    -> chuyển group kế tiếp.
-       *
-       * Không tăng totalPosted vì bài này chưa được xác nhận là đã đăng.
+       * Các lỗi khác:
+       * - Không pause/dừng toàn bộ chương trình.
+       * - Ghi nhận group hiện tại là lỗi.
+       * - Chuyển sang group kế tiếp.
        */
-      if (
-        isGroupLocalError(error)
-      ) {
-        console.log(
-          `⚠️ Lỗi thao tác tại group ${item.groupIndex + 1}: ${reason}`
-        );
+      console.error(
+        `\n❌ Lỗi tại bài ${item.index} - group ${item.groupIndex + 1}`
+      );
 
-        state.nextGroupIndex =
-          item.groupIndex + 1;
+      console.error(error);
 
-        writeJson(
-          STATE_FILE,
-          state
-        );
+      const reason =
+        error instanceof Error
+          ? error.message
+          : String(error);
 
-        console.log(
-          `⏭️ Skip group ${item.groupIndex + 1}, chuyển sang group tiếp theo.`
-        );
+      addBlockedGroup(
+        item.group,
+        `Lỗi khi đăng bài: ${reason}`
+      );
 
-        continue;
-      }
+      state.nextGroupIndex =
+        item.groupIndex + 1;
 
-      /*
-       * 3. Lỗi không xác định:
-       *    dừng để tránh trường hợp Post đã được gửi nhưng
-       *    Playwright không xác nhận được trạng thái.
-       *
-       * Đây là điểm an toàn, không tự động đăng lại.
-       */
-      console.log(
-        "\n⛔ Lỗi không xác định — dừng để kiểm tra."
+      writeJson(
+        STATE_FILE,
+        state
       );
 
       console.log(
-        `nextGroupIndex hiện tại: ${state.nextGroupIndex}`
+        `⏭️ Bỏ qua group ${item.groupIndex + 1}, tiếp tục group kế tiếp.`
       );
 
-      await page.pause();
-      return;
+      continue;
     }
   }
 

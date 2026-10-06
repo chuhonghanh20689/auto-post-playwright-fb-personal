@@ -66,9 +66,8 @@ const HISTORY_FILE = path.join(
 const FOOTER = `--------------------------------------------
 Đảo bánh quy
 📞 0859796267
-Zalo: 0945918855
-ADD1: 58 Nam Tràng, Trúc Bạch, Ba Đình, Hà Nội
-ADD2: 444/8/8 Thụy Khuê, Tây Hồ, Hà Nội
+Zalo: 0859796267
+ADD2: 444/8 Thụy Khuê, Tây Hồ, Hà Nội
 ADD3: 24 Quan Nhân, Thanh Xuân, Hà Nội`;
 
 /* =========================================================
