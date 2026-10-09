@@ -1402,5 +1402,47 @@
     "url": "https://www.facebook.com/groups/7457685734266800/",
     "reason": "Lỗi khi đăng bài: Không tìm thấy nút Photo/video.",
     "blockedAt": "2026-10-06T08:30:11.458Z"
+  },
+  {
+    "name": "CHỢ HAI BÀ TRƯNG - HÀ NỘI You last visited a year ago",
+    "url": "https://www.facebook.com/groups/2936049153363043/",
+    "reason": "Lỗi khi đăng bài: locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[contenteditable=\"true\"][role=\"textbox\"]').last()\u001b[22m\n\u001b[2m    - locator resolved to <div tabindex=\"0\" role=\"textbox\" spellcheck=\"true\" contenteditable=\"true\" data-lexical-editor=\"true\" aria-label=\"Comment as Bánh Quy\" aria-placeholder=\"Comment as Bánh Quy\" data-interactable=\"|keydown||input||click|\" class=\"xzsf02u x1a2a7pz x1n2onr6 x14wi4xw notranslate\">…</div>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div class=\"__fb-light-mode x1qjc9v5 x9f619 x78zum5 xdt5ytf xl56j7k x1c4vz4f xg6iff7\">…</div> from <div>…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div class=\"__fb-light-mode x1qjc9v5 x9f619 x78zum5 xdt5ytf xl56j7k x1c4vz4f xg6iff7\">…</div> from <div>…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    53 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <div class=\"__fb-light-mode x1qjc9v5 x9f619 x78zum5 xdt5ytf xl56j7k x1c4vz4f xg6iff7\">…</div> from <div>…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n",
+    "blockedAt": "2026-10-07T08:01:30.309Z"
+  },
+  {
+    "name": "QUÀ TẶNG DOANH NGHIỆP CAO CẤP You last visited 43 weeks ago",
+    "url": "https://www.facebook.com/groups/vangchat.com.vn/",
+    "reason": "Lỗi khi đăng bài: locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[contenteditable=\"true\"][role=\"textbox\"]').last()\u001b[22m\n\u001b[2m    - locator resolved to <div tabindex=\"0\" role=\"textbox\" spellcheck=\"true\" contenteditable=\"true\" data-lexical-editor=\"true\" aria-label=\"Comment as Bánh Quy\" aria-placeholder=\"Comment as Bánh Quy\" data-interactable=\"|keydown||input||click|\" class=\"xzsf02u x1a2a7pz x1n2onr6 x14wi4xw notranslate\">…</div>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div class=\"__fb-light-mode x1qjc9v5 x9f619 x78zum5 xdt5ytf xl56j7k x1c4vz4f xg6iff7\">…</div> from <div>…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div class=\"__fb-light-mode x1qjc9v5 x9f619 x78zum5 xdt5ytf xl56j7k x1c4vz4f xg6iff7\">…</div> from <div>…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    53 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <div class=\"__fb-light-mode x1qjc9v5 x9f619 x78zum5 xdt5ytf xl56j7k x1c4vz4f xg6iff7\">…</div> from <div>…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n",
+    "blockedAt": "2026-10-08T08:01:20.342Z"
+  },
+  {
+    "name": "Hội phụ huynh 3 You last visited a year ago",
+    "url": "https://www.facebook.com/groups/1632028204279121/",
+    "reason": "Không tìm thấy Create post/composer sau nhiều lần kiểm tra; coi là Page không có quyền đăng trong group.",
+    "blockedAt": "2026-10-08T08:44:12.500Z"
+  },
+  {
+    "name": "Hội phụ huynh 8 You last visited a year ago",
+    "url": "https://www.facebook.com/groups/447569941373458/",
+    "reason": "Không tìm thấy Create post/composer sau nhiều lần kiểm tra; coi là Page không có quyền đăng trong group.",
+    "blockedAt": "2026-10-08T09:06:07.042Z"
+  },
+  {
+    "name": "Hanoi Apartments rentals beautiful homes You last visited 40 weeks ago",
+    "url": "https://www.facebook.com/groups/1060066574038256/",
+    "reason": "Không tìm thấy Create post/composer sau nhiều lần kiểm tra; coi là Page không có quyền đăng trong group.",
+    "blockedAt": "2026-10-08T10:10:18.564Z"
+  },
+  {
+    "name": "Hanoi Massive Housing You last visited a year ago",
+    "url": "https://www.facebook.com/groups/HanoiMassiveHousing/",
+    "reason": "Không tìm thấy Create post/composer sau nhiều lần kiểm tra; coi là Page không có quyền đăng trong group.",
+    "blockedAt": "2026-10-08T10:10:29.398Z"
+  },
+  {
+    "name": "View group",
+    "url": "https://www.facebook.com/groups/2310233935911915/",
+    "reason": "Lỗi khi đăng bài: Không tìm thấy nút Photo/video.",
+    "blockedAt": "2026-10-09T04:54:26.119Z"
   }
 ]

@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import Groq from "groq-sdk";
 import * as fs from "fs";
 import * as path from "path";
 import dotenv from "dotenv";
@@ -9,20 +9,20 @@ dotenv.config();
    CONFIG
 ========================================================= */
 
-const API_KEY = process.env.GEMINI_API_KEY;
+const API_KEY = process.env.GROQ_API_KEY;
 
 if (!API_KEY) {
-  console.error("❌ Không tìm thấy GEMINI_API_KEY trong .env");
+  console.error("❌ Không tìm thấy GROQ_API_KEY trong .env");
   process.exit(1);
 }
 
-const ai = new GoogleGenAI({
+const ai = new Groq({
   apiKey: API_KEY,
 });
 
 const TOTAL_CAPTIONS = 25;
-const BATCH_SIZE = 5;
-const MODEL = "gemini-3.6-flash";
+const BATCH_SIZE = 2;
+const MODEL = "openai/gpt-oss-120b";
 
 /* =========================================================
    PATHS
@@ -471,7 +471,7 @@ async function generateBatch(
 
   const previousExamples =
     existingCaptions
-      .slice(-30)
+      .slice(-5)
       .map(
         (item) =>
           `Keyword: ${item.keyword}
@@ -834,35 +834,42 @@ Phải tạo đủ ${count} caption.
   try {
 
     const response =
-      await ai.interactions.create({
+      await ai.chat.completions.create({
 
         model: MODEL,
 
-        input: prompt,
+        messages: [
+          {
+            role: "system",
+            content: "Bạn là trợ lý viết caption Facebook. Chỉ trả về JSON hợp lệ theo yêu cầu của người dùng."
+          },
+          {
+            role: "user",
+            content: `${prompt}\n\nJSON schema mong muốn:\n${JSON.stringify(responseSchema)}`
+          }
+        ],
 
         response_format: {
+          type: "json_object"
+        },
 
-          type: "text",
-
-          mime_type:
-            "application/json",
-
-          schema:
-            responseSchema
-        }
+        temperature: 0.8
       });
 
+    const outputText =
+      response.choices[0]?.message?.content;
+
     if (
-      !response.output_text
+      !outputText
     ) {
       throw new Error(
-        "Gemini không trả về output_text."
+        "Groq không trả về nội dung caption."
       );
     }
 
     const parsed =
       JSON.parse(
-        response.output_text
+        outputText
       );
 
     if (
@@ -893,10 +900,20 @@ Phải tạo đủ ${count} caption.
         .map(
           (item: any) => {
 
-            const keyword =
+            const rawKeyword =
               String(
                 item.keyword || ""
               ).trim();
+
+            // Groq đôi khi diễn đạt keyword khác chính xác chuỗi trong campaign.
+            // Chuẩn hóa về keyword hợp lệ thay vì loại bỏ cả caption.
+            const keyword =
+              allowedKeywords.has(rawKeyword)
+                ? rawKeyword
+                : campaign.primaryKeywords.find((k) =>
+                    rawKeyword.toLowerCase().includes(k.toLowerCase()) ||
+                    k.toLowerCase().includes(rawKeyword.toLowerCase())
+                  ) || campaign.primaryKeywords[0];
 
             const content =
               String(
@@ -931,11 +948,15 @@ Phải tạo đủ ${count} caption.
             item: GeneratedCaption
           ) =>
             item.keyword &&
-            item.content &&
-            allowedKeywords.has(
-              item.keyword
-            )
+            item.content
         );
+
+    if (result.length === 0) {
+      console.error(
+        `⚠️ Groq có trả JSON nhưng không có caption hợp lệ. Raw output:`,
+        outputText
+      );
+    }
 
     return result;
 
@@ -1121,7 +1142,7 @@ async function main() {
   );
 
   console.log(
-    "       GEMINI CAPTION GENERATOR"
+    "       GROQ CAPTION GENERATOR"
   );
 
   console.log(

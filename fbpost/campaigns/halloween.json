@@ -1,44 +1,67 @@
 {
-  "name": "Halloween",
-
-  "mainKeyword": "bánh Halloween",
-
-  "keywords": [
-    "bánh Halloween",
+  "name": "Halloween - Bánh quy Halloween",
+  "imageFolder": "G:\\My Drive\\Ảnh icing tổng hợp\\automate\\Halloween",
+  "imageCount": 8,
+  "randomImages": true,
+  "mainKeyword": "bánh quy Halloween",
+  "primaryKeywords": [
     "bánh quy Halloween",
-    "Halloween cookie",
-    "icing cookie Halloween",
+    "bánh quy chủ đề Halloween",
+    "bánh quy tạo hình Halloween",
     "bánh quy vẽ Halloween",
-    "quà Halloween",
-    "set bánh Halloween",
+    "set bánh quy Halloween",
     "bánh quy handmade Halloween"
   ],
-
+  "productKeywords": [
+    "bánh quy vẽ",
+    "bánh quy vẽ hình",
+    "icing cookie",
+    "bánh quy handmade",
+    "bánh quy trang trí",
+    "bánh quy tạo hình",
+    "set bánh quy",
+    "set quà tặng",
+    "bánh quy làm quà"
+  ],
+  "audienceKeywords": [
+    "quà Halloween cho bạn bè",
+    "bánh Halloween cho bé",
+    "quà Halloween cho người yêu",
+    "bánh Halloween cho đồng nghiệp",
+    "bánh Halloween cho tiệc",
+    "bánh Halloween cho gia đình"
+  ],
   "angles": [
-    "quà Halloween",
-    "tiệc Halloween",
-    "bánh cho trẻ em",
-    "bánh chủ đề Halloween",
-    "set bánh Halloween",
-    "bánh Halloween cho bạn bè",
-    "bánh Halloween cho sự kiện"
+    "bánh quy tạo hình bí ngô Halloween",
+    "bánh quy ma nhỏ dễ thương",
+    "bánh quy dơi và mèo đen",
+    "bánh quy chủ đề Halloween đáng yêu",
+    "set bánh quy Halloween làm quà",
+    "bánh quy Halloween cho tiệc hóa trang",
+    "bánh quy cho tiệc Halloween của bé",
+    "bánh quy vẽ icing cookie theo chủ đề Halloween",
+    "nhiều mẫu bánh Halloween để lựa chọn",
+    "bánh được đóng túi riêng từng chiếc",
+    "set bánh quy trang trí cho bàn tiệc",
+    "tặng bánh Halloween cho bạn bè",
+    "bánh quy handmade cho mùa Halloween",
+    "gợi ý bánh ngọt cho buổi tiệc Halloween"
   ],
-
   "hashtags": [
-    "#halloween",
-    "#halloweencookie",
-    "#banhquyhalloween",
-    "#icingcookie",
-    "#banhquyve",
-    "#banhquyhandmade"
+    "#Halloween",
+    "#BanhQuyHalloween",
+    "#BanhHalloween",
+    "#IcingCookie",
+    "#BanhQuyVe",
+    "#BanhQuyHandmade",
+    "#BanhQuyTrangTri",
+    "#SetBanhQuy"
   ],
-
   "secondaryOccasions": [
     "sinh nhật",
-    "quà tặng",
-    "tiệc",
-    "sự kiện"
+    "tiệc hóa trang",
+    "tiệc cho bé",
+    "Giáng sinh"
   ],
-
-  "instruction": "Halloween là chủ đề chính. Các dịp khác chỉ được nhắc nhẹ và không được chiếm trọng tâm."
+  "instruction": "Halloween là campaign chính. Phần lớn caption phải tập trung rõ vào bánh quy Halloween hoặc nhu cầu mua bánh cho tiệc/quà tặng Halloween. Trong mỗi caption ưu tiên sử dụng 1-2 primary keywords, kết hợp 2-4 product keywords và nếu phù hợp thêm 1-2 audience keywords. Keyword được phép lặp lại tự nhiên 2-3 lần trong một caption nếu câu văn vẫn tự nhiên. Không nhồi keyword liên tiếp hoặc lặp cùng một cụm trong mọi câu. Có thể khai thác cả phong cách dễ thương lẫn ma quái vui nhộn; không mặc định tất cả mẫu bánh đều đáng sợ. Các dịp phụ chỉ được nhắc nhẹ và không được chiếm trọng tâm."
 }
