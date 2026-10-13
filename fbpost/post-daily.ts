@@ -1163,10 +1163,13 @@ async function main(): Promise<void> {
    *   nextGroupIndex - startGroupIndex
    * vì batch.posts có thể không liên tục.
    */
+  // Chọn bài đầu tiên chưa xử lý trong batch.
+  // Batch có thể bỏ qua các group bị block nên groupIndex
+  // không nhất thiết liên tục hoặc bắt đầu từ 0.
   const currentIndex =
     batch.posts.findIndex(
       (post) =>
-        post.groupIndex ===
+        post.groupIndex >=
         state.nextGroupIndex
     );
 
@@ -1206,7 +1209,7 @@ async function main(): Promise<void> {
   }
 
   console.log(
-    `▶️ Bắt đầu từ group ${state.nextGroupIndex + 1} ` +
+    `▶️ Bắt đầu từ group ${batch.posts[currentIndex].groupIndex + 1} ` +
     `(bài ${currentIndex + 1}/${batch.posts.length})`
   );
 
