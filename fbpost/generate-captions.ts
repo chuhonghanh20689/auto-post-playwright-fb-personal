@@ -23,6 +23,7 @@ const ai = new Groq({
 const TOTAL_CAPTIONS = 25;
 const BATCH_SIZE = 2;
 const MODEL = "openai/gpt-oss-120b";
+const MAX_RATE_LIMIT_RETRIES = 5;
 
 /* =========================================================
    PATHS
@@ -67,7 +68,7 @@ const FOOTER = `--------------------------------------------
 Đảo bánh quy
 📞 0859796267
 Zalo: 0859796267
-ADD2: 444/8 Thụy Khuê, Tây Hồ, Hà Nội
+ADD2: 28 Xuân La, Tây Hồ, Hà Nội
 ADD3: 24 Quan Nhân, Thanh Xuân, Hà Nội`;
 
 /* =========================================================
@@ -831,10 +832,41 @@ Chỉ trả về JSON đúng schema.
 Phải tạo đủ ${count} caption.
 `;
 
+  const sleep = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms));
+
+  const getRateLimitWaitMs = (error: any, retryNumber: number): number => {
+    const headers = error?.headers;
+    const retryAfter = Number(headers?.get?.("retry-after"));
+    if (Number.isFinite(retryAfter) && retryAfter > 0) {
+      return retryAfter * 1000;
+    }
+
+    // Groq reports reset values like "25.957s" for token limits.
+    const resetTokens = headers?.get?.("x-ratelimit-reset-tokens");
+    const resetMatch = typeof resetTokens === "string"
+      ? resetTokens.match(/([\d.]+)s/i)
+      : null;
+    if (resetMatch) {
+      return Math.ceil(Number(resetMatch[1]) * 1000) + 500;
+    }
+
+    // The error body can report a precise wait (for example "try again in 142.5ms").
+    const message = String(error?.message || "");
+    const waitMatch = message.match(/try again in\s*([\d.]+)\s*(ms|s)/i);
+    if (waitMatch) {
+      return Math.ceil(Number(waitMatch[1]) * (waitMatch[2].toLowerCase() === "s" ? 1000 : 1)) + 500;
+    }
+
+    return Math.min(1000 * 2 ** retryNumber, 30_000);
+  };
+
   try {
 
-    const response =
-      await ai.chat.completions.create({
+    let response;
+    for (let attempt = 0; ; attempt++) {
+      try {
+        response = await ai.chat.completions.create({
 
         model: MODEL,
 
@@ -855,6 +887,18 @@ Phải tạo đủ ${count} caption.
 
         temperature: 0.8
       });
+        break;
+      } catch (error: any) {
+        const isRateLimit = error?.status === 429 || error?.code === "rate_limit_exceeded";
+        if (!isRateLimit || attempt >= MAX_RATE_LIMIT_RETRIES) {
+          throw error;
+        }
+
+        const waitMs = getRateLimitWaitMs(error, attempt);
+        console.log(`⏳ Groq đang giới hạn tốc độ. Chờ ${Math.ceil(waitMs / 1000)} giây rồi thử lại (${attempt + 1}/${MAX_RATE_LIMIT_RETRIES})...`);
+        await sleep(waitMs);
+      }
+    }
 
     const outputText =
       response.choices[0]?.message?.content;
@@ -966,9 +1010,8 @@ Phải tạo đủ ${count} caption.
       `❌ Lỗi khi tạo batch ${batchNumber}:`
     );
 
-    console.error(
-      error
-    );
+    const apiError = error as any;
+    console.error(apiError?.message || error);
 
     return [];
   }

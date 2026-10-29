@@ -1,56 +1,69 @@
 {
   "name": "20/11 - Ngày Nhà giáo Việt Nam",
-
+  "imageFolder": "G:\\My Drive\\Ảnh icing tổng hợp\\automate\\20-11",
+  "imageCount": 8,
+  "randomImages": true,
   "mainKeyword": "quà tặng 20/11",
-
-  "keywords": [
+  "primaryKeywords": [
     "quà 20/11",
     "quà tặng 20/11",
-    "quà Nhà giáo Việt Nam",
-    "quà tặng cô giáo",
-    "quà tặng thầy cô",
-    "quà tặng giáo viên",
     "bánh quy 20/11",
     "bánh quy vẽ 20/11",
+    "set quà 20/11",
+    "quà tặng ngày Nhà giáo Việt Nam"
+  ],
+  "productKeywords": [
     "bánh quy vẽ",
+    "bánh quy vẽ hình",
     "icing cookie",
     "bánh quy handmade",
-    "set quà tặng"
+    "bánh quy trang trí",
+    "bánh quy tri ân thầy cô",
+    "set bánh quy",
+    "set quà tặng",
+    "bánh quy làm quà"
   ],
-
+  "audienceKeywords": [
+    "quà tặng cô giáo",
+    "quà tặng thầy giáo",
+    "quà tặng giáo viên",
+    "quà tặng giáo viên chủ nhiệm",
+    "quà tặng cô mầm non",
+    "quà tặng giảng viên",
+    "quà tặng thầy cô"
+  ],
   "angles": [
     "quà tặng cô giáo ngày 20/11",
-    "quà tặng thầy cô ngày 20/11",
-    "món quà nhỏ gửi lời cảm ơn thầy cô",
-    "quà tặng giáo viên",
-    "quà tặng cô giáo mầm non",
-    "quà tặng giáo viên tiểu học",
-    "quà tặng giáo viên từ phụ huynh",
-    "quà tặng thầy cô từ học sinh",
-    "set bánh quy làm quà 20/11",
-    "bánh quy hoa tặng cô giáo",
-    "bánh quy vẽ icing cookie làm quà"
+    "quà tặng thầy giáo ngày 20/11",
+    "quà tri ân thầy cô",
+    "quà tặng giáo viên chủ nhiệm",
+    "quà tặng cô mầm non",
+    "quà tặng giảng viên",
+    "một set bánh nhỏ gửi lời cảm ơn thầy cô",
+    "bánh quy vẽ làm quà 20/11",
+    "bánh quy vẽ icing cookie",
+    "nhiều mẫu bánh để lựa chọn",
+    "bánh được đóng túi riêng từng chiếc",
+    "set bánh phù hợp làm quà tri ân",
+    "món quà nhỏ thay lời cảm ơn",
+    "gợi ý quà tặng ngày Nhà giáo Việt Nam"
   ],
-
   "hashtags": [
     "#2011",
-    "#quatang2011",
-    "#nhagiaovietnam",
-    "#quatangthayco",
-    "#quatangcogiaovien",
-    "#banhquyve",
-    "#icingcookie",
-    "#banhquyhandmade",
-    "#setquatang"
+    "#NgayNhaGiaoVietNam",
+    "#QuaTang2011",
+    "#TriAnThayCo",
+    "#BanhQuy2011",
+    "#BanhQuyVe",
+    "#IcingCookie",
+    "#BanhQuyHandmade",
+    "#SetQuaTang"
   ],
-
   "secondaryOccasions": [
     "sinh nhật",
-    "8/3",
-    "20/10",
+    "tốt nghiệp",
     "Giáng sinh",
-    "tốt nghiệp"
+    "quà cảm ơn"
   ],
-
-  "instruction": "20/11 và nhu cầu tặng quà thầy cô phải là trọng tâm của phần lớn caption. Nội dung nên tập trung vào lời cảm ơn, sự trân trọng và gợi ý bánh quy vẽ icing cookie như một món quà nhỏ xinh. Các dịp khác chỉ được nhắc nhẹ để mở rộng nhu cầu, không được chiếm trọng tâm."
+  "instruction": "20/11 - Ngày Nhà giáo Việt Nam là campaign chính. Phần lớn caption phải thể hiện rõ ý định mua quà 20/11 hoặc tri ân thầy cô. Trong mỗi caption ưu tiên sử dụng 1-2 primary keywords, kết hợp 2-4 product keywords và nếu phù hợp thêm 1-2 audience keywords. Keyword được phép lặp lại tự nhiên 2-3 lần trong một caption nếu câu văn vẫn tự nhiên. Không nhồi keyword liên tiếp hoặc lặp cùng một cụm trong mọi câu. Tập trung vào thông điệp tri ân, lời cảm ơn và những món quà nhỏ ý nghĩa dành cho thầy cô; các dịp phụ chỉ được nhắc nhẹ và không được chiếm trọng tâm."
 }
