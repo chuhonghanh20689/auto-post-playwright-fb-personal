@@ -292,6 +292,17 @@ async function findVisibleText(
 async function findComposer(
   page: Page
 ): Promise<Locator | null> {
+  // Không thao tác với nền trang nếu Facebook đang mở hộp thoại New note.
+  // "Share a thought..." là lối vào Notes, KHÔNG phải trình tạo bài viết.
+  const newNoteDialog = page
+    .getByText("New note", { exact: true })
+    .last();
+
+  if (await newNoteDialog.isVisible().catch(() => false)) {
+    console.log("⚠️ Facebook đang mở New note; bỏ qua để tránh nhập nhầm nội dung.");
+    return null;
+  }
+
   const exactTexts = [
     "Write something...",
     "Create a post",
@@ -788,7 +799,6 @@ async function enableShareToStoryBeforePost(
   console.log("📲 Kiểm tra Share to story trước khi Post...");
 
   const deadline = Date.now() + 20_000;
-
   let row: Locator | null = null;
 
   while (Date.now() < deadline) {
@@ -803,23 +813,8 @@ async function enableShareToStoryBeforePost(
     );
   }
 
-  console.log("📲 Mở Share to story settings...");
   await row.click({ timeout: ACTION_TIMEOUT });
   await page.waitForTimeout(1_000);
-
-  /*
-   * Facebook hiện tại của b mở một dialog:
-   *
-   *   Share to story?
-   *   ○ Share only this post
-   *   ● Always share posts to story
-   *   ○ Don't share post to story
-   *                         Save
-   *
-   * Với UI này không cần tìm switch chung chung.
-   * Chỉ cần đảm bảo "Always share posts to story" được chọn,
-   * rồi click Save.
-   */
 
   const alwaysSharePatterns = [
     /^Always share posts to story$/i,
@@ -831,13 +826,8 @@ async function enableShareToStoryBeforePost(
   const optionDeadline = Date.now() + 15_000;
 
   while (Date.now() < optionDeadline) {
-    alwaysShareOption = await findVisibleText(
-      page,
-      alwaysSharePatterns
-    );
-
+    alwaysShareOption = await findVisibleText(page, alwaysSharePatterns);
     if (alwaysShareOption) break;
-
     await page.waitForTimeout(400);
   }
 
@@ -847,98 +837,84 @@ async function enableShareToStoryBeforePost(
     );
   }
 
-  // Click đúng dòng "Always share..." nếu radio chưa được chọn.
-  const ariaChecked =
-    await alwaysShareOption.getAttribute("aria-checked");
-  const ariaSelected =
-    await alwaysShareOption.getAttribute("aria-selected");
+  const saveButton = await findVisibleText(page, [/^Save$/i, /^Lưu$/i]);
 
-  const parentChecked =
-    await alwaysShareOption
-      .locator("xpath=..")
-      .getAttribute("aria-checked")
-      .catch(() => null);
-
-  const parentSelected =
-    await alwaysShareOption
-      .locator("xpath=..")
-      .getAttribute("aria-selected")
-      .catch(() => null);
-
-  const alreadySelected =
-    ariaChecked === "true" ||
-    ariaSelected === "true" ||
-    parentChecked === "true" ||
-    parentSelected === "true";
-
-  if (!alreadySelected) {
+  // On this Facebook UI, Save is disabled when "Always share posts to story"
+  // is already the active setting and nothing needs saving. Do not click it.
+  if (saveButton && !(await saveButton.isEnabled().catch(() => false))) {
     console.log(
-      "📲 'Always share posts to story' chưa chọn → click..."
+      "✅ Always share posts to story đang được bật sẵn (Save disabled). Quay lại, không cần lưu."
     );
 
-    await alwaysShareOption.click({
-      timeout: ACTION_TIMEOUT
-    });
+    let backButton: Locator | null = null;
+    const backSelectors = [
+      '[role="dialog"] button[aria-label*="Back"]',
+      '[role="dialog"] button[aria-label*="back"]',
+      '[role="dialog"] button[aria-label*="Quay lại"]',
+      'button[aria-label*="Back"]',
+      'button[aria-label*="Quay lại"]'
+    ];
 
-    await page.waitForTimeout(600);
-  } else {
-    console.log(
-      "✅ 'Always share posts to story' đã được chọn sẵn."
-    );
-  }
-
-  /*
-   * Nút Save/Lưu của đúng dialog.
-   * Không dùng selector chung chung kiểu Share/Chia sẻ.
-   */
-  const savePatterns = [
-    /^Save$/i,
-    /^Lưu$/i
-  ];
-
-  let saveButton: Locator | null = null;
-  const saveDeadline = Date.now() + 15_000;
-
-  while (Date.now() < saveDeadline) {
-    saveButton = await findVisibleText(
-      page,
-      savePatterns
-    );
-
-    if (saveButton) break;
-
-    await page.waitForTimeout(400);
-  }
-
-  if (!saveButton) {
-    throw new Error(
-      "Không tìm thấy nút Save/Lưu trong dialog Share to story."
-    );
-  }
-
-  console.log("💾 Click Save để lưu Share to story...");
-  await saveButton.click({
-    timeout: ACTION_TIMEOUT
-  });
-
-  /*
-   * Chờ dialog Share to story? đóng hẳn.
-   */
-  const closeDeadline = Date.now() + 15_000;
-
-  while (Date.now() < closeDeadline) {
-    const dialogOption = await findVisibleText(
-      page,
-      alwaysSharePatterns
-    );
-
-    if (!dialogOption) {
-      console.log(
-        "✅ Đã lưu Share to story. Quay lại Post settings."
-      );
-      return;
+    for (const selector of backSelectors) {
+      const candidate = page.locator(selector).last();
+      if (await candidate.isVisible().catch(() => false)) {
+        backButton = candidate;
+        break;
+      }
     }
 
+    if (!backButton) {
+      const dialog = page.locator('[role="dialog"]').last();
+      if (await dialog.isVisible().catch(() => false)) {
+        const buttons = dialog.locator("button");
+        if (await buttons.count() > 0) {
+          backButton = buttons.first();
+        }
+      }
+    }
+
+    if (backButton) {
+      await backButton.click({ timeout: ACTION_TIMEOUT });
+    } else {
+      await page.keyboard.press("Escape");
+    }
+
+    const closeDeadline = Date.now() + 10_000;
+    while (Date.now() < closeDeadline) {
+      const stillOpen = await findVisibleText(page, alwaysSharePatterns);
+      if (!stillOpen) {
+        console.log("✅ Đã quay lại Post settings.");
+        return;
+      }
+      await page.waitForTimeout(300);
+    }
+
+    throw new Error(
+      "Share to story đã bật sẵn nhưng không đóng được hộp thoại bằng nút quay lại."
+    );
+  }
+
+  // Save is enabled: select the desired option, then save the change.
+  console.log("📲 Chọn Always share posts to story...");
+  await alwaysShareOption.click({ timeout: ACTION_TIMEOUT });
+  await page.waitForTimeout(700);
+
+  const refreshedSaveButton = await findVisibleText(page, [/^Save$/i, /^Lưu$/i]);
+  if (!refreshedSaveButton || !(await refreshedSaveButton.isEnabled().catch(() => false))) {
+    throw new Error(
+      "Không thể xác nhận nút Save sau khi chọn Always share posts to story."
+    );
+  }
+
+  await refreshedSaveButton.click({ timeout: ACTION_TIMEOUT });
+
+  const closeDeadline = Date.now() + 15_000;
+  while (Date.now() < closeDeadline) {
+    const stillOpen = await findVisibleText(page, alwaysSharePatterns);
+    if (!stillOpen) {
+      console.log("✅ Đã lưu Share to story và quay lại Post settings.");
+      return;
+    }
     await page.waitForTimeout(400);
   }
 
